@@ -1,0 +1,24 @@
+# Postgres for local development.
+# Start:  docker compose up -d
+# Stop:   docker compose down        (data kept in the named volume)
+# Wipe:   docker compose down -v     (deletes all data)
+services:
+  db:
+    image: postgres:16
+    container_name: todo-postgres
+    environment:
+      POSTGRES_USER: todo_user
+      POSTGRES_PASSWORD: todo_pass
+      POSTGRES_DB: todo_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - todo_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U todo_user -d todo_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  todo_pgdata:
